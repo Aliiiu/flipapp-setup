@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { TbEye } from 'react-icons/tb';
 import { FiUploadCloud } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { ImageConfig } from '../ImageConfig';
 
 type User = {
 	name: string;
@@ -17,6 +19,8 @@ type User = {
 const SchoolForm = () => {
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [showPassword, setshowPassword] = useState<boolean>(false);
+	const [imageFile, setImageFile] = useState<File | null>();
+	const [imageType, setImageType] = useState('');
 	const {
 		register,
 		handleSubmit,
@@ -27,6 +31,35 @@ const SchoolForm = () => {
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		console.log(JSON.stringify(data));
 	};
+
+	// const onFileDrop = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	e.preventDefault();
+	// 	let file = (e.target as HTMLInputElement).files?.[0];
+	// 	setFile(e.target.files?.[0]);
+	// };
+	const handleChange = (selectorFiles: FileList) => {
+		// console.log(selectorFiles[0]);
+		setImageFile(selectorFiles[0]);
+	};
+	console.log(imageFile?.name.length);
+
+	const fileRemove = () => {
+		setImageFile(null);
+	};
+	// const onFileDrop = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	e.preventDefault();
+	// 	const target = e.currentTarget as HTMLInputElement;
+	// 	// setFile(target.files)
+	// 	// setFile(target.files![0]);
+	// 	if (e.target.files && e.target.files.length > 0) {
+	// 		// const updatedList = newFile[0];
+
+	// 		const file = target.files![0];
+	// 		console.log(file.name);
+	// 		setFileName(file.name);
+	// 	}
+	// 	console.log(fileName);
+	// };
 	return (
 		<div className=''>
 			<div className='container min-h-screen'>
@@ -96,26 +129,47 @@ const SchoolForm = () => {
 											className='text-[20px] absolute right-5 cursor-pointer'
 										/>
 									</div>
-									<label htmlFor='dropzone-file'>
-										School Logo
-										<div className='input_border flex flex-col mt-2 justify-center cursor-pointer items-center w-full py-[16px] px-[24px]'>
-											<div className=' rounded-[28px] border-8 border-[#F9FAFB]'>
-												<div className='w-[30px] h-[30px] flex justify-center items-center rounded-[100%] bg-[#F2F4F7]'>
-													<FiUploadCloud />
+									<label htmlFor='dropzone-file'>School Logo</label>
+
+									<div className='relative input_border mt-2 cursor-pointer w-full py-[16px] px-[24px]'>
+										{imageFile?.name.length ? (
+											<div className='flex justify-center items-center'>
+												<img src={ImageConfig['png']} alt='' width={'40px'} />
+												<div className='ml-7 flex justify-between items-center w-full'>
+													<p>{imageFile?.name}</p>
+													<div>
+														<IoCloseOutline
+															onClick={() => fileRemove()}
+															className='bg-red-300 rounded-[100%] w-[30px] h-[30px]'
+														/>
+													</div>
 												</div>
 											</div>
-											<p>
-												<span className='text-[#0075FF]'>Click to upload </span>
-												or drag and drop
-											</p>
-											<p>SVG, PNG, JPG or GIF (max. 800x400px)</p>
-											<input
-												id='dropzone-file'
-												type='file'
-												className='opacity-0'
-											/>
-										</div>
-									</label>
+										) : (
+											<div className='flex flex-col justify-center items-center'>
+												<div className=' rounded-[28px] border-8 border-[#F9FAFB]'>
+													<div className='w-[30px] h-[30px] flex justify-center items-center rounded-[100%] bg-[#F2F4F7]'>
+														<FiUploadCloud />
+													</div>
+												</div>
+												<p>
+													<span className='text-[#0075FF]'>
+														Click to upload{' '}
+													</span>
+													or drag and drop
+												</p>
+												<p>SVG, PNG, JPG or GIF (max. 800x400px)</p>
+												<input
+													id='dropzone-file'
+													type='file'
+													onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+														handleChange(e.target.files!)
+													}
+													className='opacity-0 cursor-pointer absolute top-0 left-0 w-full h-full'
+												/>
+											</div>
+										)}
+									</div>
 
 									<div className='w-full text-center mt-[24px]'>
 										<Link to={'/terms-and-year'}>
