@@ -1,6 +1,7 @@
 import { BiChevronDown } from 'react-icons/bi';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 type User = {
 	term: string;
@@ -8,6 +9,10 @@ type User = {
 };
 
 const TermsAndYear = () => {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
 	let maxOffset = 20;
 	let currYear = new Date().getFullYear();
 	let years = [];
@@ -44,7 +49,7 @@ const TermsAndYear = () => {
 						/>
 					</div>
 					<div className='min-h-screen w-[50%]'>
-						<div className='flex justify-center items-center h-full w-full'>
+						<div className='flex items-center justify-center w-full h-full'>
 							<div className='w-[70%]'>
 								<h2 className='text-[32px] font-bold mobile:text-center'>
 									Set Term and Year

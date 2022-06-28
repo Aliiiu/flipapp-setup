@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,9 @@ interface CLASS {
 }
 
 const Classes = () => {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 	const enteredClass = useRef<HTMLInputElement | null>(null);
 	const [classList, setclassList] = useState<CLASS[]>([
 		{

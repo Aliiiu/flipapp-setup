@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BiChevronDown } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 
 const SuperAdmin = () => {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 	return (
 		<div className=''>
 			<div className='container min-h-screen'>

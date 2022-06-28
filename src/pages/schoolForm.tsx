@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TbEye } from 'react-icons/tb';
 import { FiUploadCloud } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { ImageConfig } from '../ImageConfig';
+import { ImageConfig } from '../components/ImageConfig';
 
 type User = {
 	name: string;
@@ -20,6 +20,9 @@ const SchoolForm = () => {
 	const [showPassword, setshowPassword] = useState<boolean>(false);
 	const [imageFile, setImageFile] = useState<File | null>();
 	const { register, handleSubmit } = useForm<User>();
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		console.log(JSON.stringify(data));
@@ -126,9 +129,9 @@ const SchoolForm = () => {
 
 									<div className='relative input_border mt-2 cursor-pointer w-full py-[16px] px-[24px]'>
 										{imageFile?.name.length ? (
-											<div className='flex justify-center items-center'>
+											<div className='flex items-center justify-center'>
 												<img src={ImageConfig['png']} alt='' width={'40px'} />
-												<div className='ml-7 flex justify-between items-center w-full'>
+												<div className='flex items-center justify-between w-full ml-7'>
 													<p>{imageFile?.name}</p>
 													<div>
 														<IoCloseOutline
@@ -139,7 +142,7 @@ const SchoolForm = () => {
 												</div>
 											</div>
 										) : (
-											<div className='flex flex-col justify-center items-center'>
+											<div className='flex flex-col items-center justify-center'>
 												<div className=' rounded-[28px] border-8 border-[#F9FAFB]'>
 													<div className='w-[30px] h-[30px] flex justify-center items-center rounded-[100%] bg-[#F2F4F7]'>
 														<FiUploadCloud />
@@ -158,7 +161,7 @@ const SchoolForm = () => {
 													onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 														handleChange(e.target.files!)
 													}
-													className='opacity-0 cursor-pointer absolute top-0 left-0 w-full h-full'
+													className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
 												/>
 											</div>
 										)}

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,9 @@ interface SUBJECT {
 }
 
 const Subject = () => {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 	const enteredSubject = useRef<HTMLInputElement | null>(null);
 	const [subjectList, setsubjectList] = useState<SUBJECT[]>([
 		{ id: '1', subjectName: 'English' },
