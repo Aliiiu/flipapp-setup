@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { BiChevronDown } from 'react-icons/bi';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -9,8 +8,6 @@ type User = {
 };
 
 const TermsAndYear = () => {
-	const [showModal, setShowModal] = useState<boolean>(false);
-	const [showPassword, setshowPassword] = useState<boolean>(false);
 	let maxOffset = 20;
 	let currYear = new Date().getFullYear();
 	let years = [];
@@ -23,12 +20,7 @@ const TermsAndYear = () => {
 			{year}
 		</option>
 	));
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<User>();
+	const { register, handleSubmit } = useForm<User>();
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		console.log(JSON.stringify(data));

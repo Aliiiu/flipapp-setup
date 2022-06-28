@@ -17,16 +17,9 @@ type User = {
 };
 
 const SchoolForm = () => {
-	const [showModal, setShowModal] = useState<boolean>(false);
 	const [showPassword, setshowPassword] = useState<boolean>(false);
 	const [imageFile, setImageFile] = useState<File | null>();
-	const [imageType, setImageType] = useState('');
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<User>();
+	const { register, handleSubmit } = useForm<User>();
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		console.log(JSON.stringify(data));
