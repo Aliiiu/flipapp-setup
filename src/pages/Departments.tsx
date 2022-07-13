@@ -1,30 +1,32 @@
+import axios from 'axios';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 interface DEPARTMENT {
-	id: string;
-	name: string;
+	departmentId: string;
+	departmentName: string;
 }
 
 const Departments = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+	let navigate = useNavigate();
 	const enteredDepartment = useRef<HTMLInputElement | null>(null);
 	const [departmentList, setdepartmentList] = useState<DEPARTMENT[]>([
 		{
-			id: '1',
-			name: 'Science',
+			departmentId: '1',
+			departmentName: 'Science',
 		},
 		{
-			id: '2',
-			name: 'Commercial',
+			departmentId: '2',
+			departmentName: 'Commercial',
 		},
 		{
-			id: '3',
-			name: 'Art',
+			departmentId: '3',
+			departmentName: 'Art',
 		},
 	]);
 
@@ -35,8 +37,8 @@ const Departments = () => {
 		setdepartmentList([
 			...departmentList,
 			{
-				id: uuidv4(),
-				name: className,
+				departmentId: uuidv4(),
+				departmentName: className,
 			},
 		]);
 		enteredDepartment.current!.value = '';
@@ -45,9 +47,39 @@ const Departments = () => {
 	const removeDepartment = (departmentId: string) => {
 		setdepartmentList((prevState) => {
 			return prevState.filter(
-				(departmentList) => departmentList.id !== departmentId
+				(departmentList) => departmentList.departmentId !== departmentId
 			);
 		});
+	};
+
+	const departmentHandler = async () => {
+		let data = { departmentList: departmentList };
+		// console.log(JSON.stringify(data));
+		let config = {
+			method: 'POST',
+			url: `https://admin-service.flipcbt.com/v1/app-setup/set-department`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: data,
+		};
+		let error: any;
+		try {
+			const res = await axios(config);
+			if (res.data.success === true) {
+				alert(res.data.message);
+				navigate('/superadmin');
+			}
+		} catch (err) {
+			console.log(err);
+			error = err;
+			if (error.response.status === 409) {
+				alert(error.response.data.error.message);
+			} else {
+				alert('something went wrong');
+			}
+		}
+		// console.log(departmentList);
 	};
 	return (
 		<div className=''>
@@ -92,7 +124,7 @@ const Departments = () => {
 									<ul>
 										{departmentList.map((departmentItem) => (
 											<li
-												key={departmentItem.id}
+												key={departmentItem.departmentId}
 												className='flex my-[24px] justify-between'
 											>
 												<div className='flex'>
@@ -104,11 +136,13 @@ const Departments = () => {
 														className='mr-[10px]'
 													/>{' '}
 													<p className='text-[#06042C] text-opacity-50'>
-														{departmentItem.name}
+														{departmentItem.departmentName}
 													</p>{' '}
 												</div>
 												<IoCloseOutline
-													onClick={() => removeDepartment(departmentItem.id)}
+													onClick={() =>
+														removeDepartment(departmentItem.departmentId)
+													}
 													className='text-[#06042C] cursor-pointer text-opacity-50 text-[25px]'
 												/>{' '}
 											</li>
@@ -117,11 +151,12 @@ const Departments = () => {
 								</div>
 
 								<div className='w-full text-center mt-[24px]'>
-									<Link to={'/superadmin'}>
-										<div className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'>
-											Next
-										</div>
-									</Link>
+									<button
+										onClick={departmentHandler}
+										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+									>
+										Next
+									</button>
 								</div>
 							</div>
 						</div>

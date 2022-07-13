@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 interface SUBJECT {
-	id: string;
+	subjectId: string;
 	subjectName: string;
 }
 
@@ -12,16 +13,17 @@ const Subject = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+	let navigate = useNavigate();
 	const enteredSubject = useRef<HTMLInputElement | null>(null);
 	const [subjectList, setsubjectList] = useState<SUBJECT[]>([
-		{ id: '1', subjectName: 'English' },
-		{ id: '2', subjectName: 'Mathematics' },
-		{ id: '3', subjectName: 'Social Studies' },
-		{ id: '4', subjectName: 'French' },
-		{ id: '5', subjectName: 'Yoruba' },
-		{ id: '6', subjectName: 'Basic Science' },
-		{ id: '7', subjectName: 'Basic Technology' },
-		{ id: '8', subjectName: 'Home Economics' },
+		{ subjectId: '1', subjectName: 'English' },
+		{ subjectId: '2', subjectName: 'Mathematics' },
+		{ subjectId: '3', subjectName: 'Social Studies' },
+		{ subjectId: '4', subjectName: 'French' },
+		{ subjectId: '5', subjectName: 'Yoruba' },
+		{ subjectId: '6', subjectName: 'Basic Science' },
+		{ subjectId: '7', subjectName: 'Basic Technology' },
+		{ subjectId: '8', subjectName: 'Home Economics' },
 	]);
 
 	const submitHandler = (event: React.SyntheticEvent) => {
@@ -31,7 +33,7 @@ const Subject = () => {
 		setsubjectList([
 			...subjectList,
 			{
-				id: uuidv4(),
+				subjectId: uuidv4(),
 				subjectName: subject,
 			},
 		]);
@@ -40,8 +42,38 @@ const Subject = () => {
 
 	const removeSubject = (subjectId: string) => {
 		setsubjectList((prevState) => {
-			return prevState.filter((subjectList) => subjectList.id !== subjectId);
+			return prevState.filter(
+				(subjectList) => subjectList.subjectId !== subjectId
+			);
 		});
+	};
+
+	const subjectHandler = async () => {
+		// console.log(subjectList);
+		let config = {
+			method: 'POST',
+			url: `https://admin-service.flipcbt.com/v1/app-setup/set-subject`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: { subjectList: [...subjectList] },
+		};
+		let error: any;
+		try {
+			const res = await axios(config);
+			if (res.data.success === true) {
+				alert(res.data.message);
+				navigate('/add-class');
+			}
+		} catch (err) {
+			console.log(err);
+			error = err;
+			if (error.response.status === 409) {
+				alert(error.response.data.error.message);
+			} else {
+				alert('something went wrong');
+			}
+		}
 	};
 	return (
 		<div className=''>
@@ -86,7 +118,7 @@ const Subject = () => {
 									<ul>
 										{subjectList.map((subjectItem) => (
 											<li
-												key={subjectItem.id}
+												key={subjectItem.subjectId}
 												className='flex my-[24px] justify-between'
 											>
 												<div className='flex'>
@@ -102,7 +134,7 @@ const Subject = () => {
 													</p>{' '}
 												</div>
 												<IoCloseOutline
-													onClick={() => removeSubject(subjectItem.id)}
+													onClick={() => removeSubject(subjectItem.subjectId)}
 													className='text-[#06042C] cursor-pointer text-opacity-50 text-[25px]'
 												/>{' '}
 											</li>
@@ -110,11 +142,12 @@ const Subject = () => {
 									</ul>
 								</div>
 								<div className='w-full text-center mt-[24px]'>
-									<Link to={'/add-class'}>
-										<div className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'>
-											Next
-										</div>
-									</Link>
+									<button
+										onClick={subjectHandler}
+										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+									>
+										Next
+									</button>
 								</div>
 							</div>
 						</div>

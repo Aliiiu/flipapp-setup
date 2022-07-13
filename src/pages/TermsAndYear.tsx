@@ -1,6 +1,7 @@
 import { BiChevronDown } from 'react-icons/bi';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useEffect } from 'react';
 
 type User = {
@@ -9,16 +10,22 @@ type User = {
 };
 
 const TermsAndYear = () => {
+	let navigate = useNavigate();
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	let maxOffset = 20;
-	let currYear = new Date().getFullYear();
-	let years = [];
-	for (let x = 0; x < maxOffset; x++) {
-		years.push(currYear - x);
-	}
+	let years = [
+		'2023/22',
+		'2022/21',
+		'2021/20',
+		'2020/19',
+		'2019/18',
+		'2018/17',
+	];
+	// for (let x = 0; x < maxOffset; x++) {
+	// 	years.push(currYear - x);
+	// }
 
 	const yearList = years.map((year, idx) => (
 		<option key={idx} value={year}>
@@ -28,7 +35,32 @@ const TermsAndYear = () => {
 	const { register, handleSubmit } = useForm<User>();
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
-		console.log(JSON.stringify(data));
+		// console.log(data);
+		// console.log(JSON.stringify(data));
+		let config = {
+			method: 'POST',
+			url: `https://admin-service.flipcbt.com/v1/app-setup/set-term-and-year`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(data),
+		};
+		let error: any;
+		try {
+			const res = await axios(config);
+			if (res.data.success === true) {
+				alert(res.data.message);
+				navigate('/add-subject');
+			}
+		} catch (err) {
+			console.log(err);
+			error = err;
+			if (error.response.status === 409) {
+				alert(error.response.data.error.message);
+			} else {
+				alert('something went wrong');
+			}
+		}
 	};
 	return (
 		<div className=''>
@@ -63,10 +95,11 @@ const TermsAndYear = () => {
 										<select
 											{...register('term')}
 											placeholder='First'
-											className={`px-[24px] py-[17px] text-[16px] bg-white text-gray-400 rounded-[8px] placeholder-gray-400 border border-[#828282] outline-none w-full focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight`}
+											className={`px-[24px] py-[17px] text-[16px] bg-white text-[#06042C] rounded-[8px] placeholder-gray-400 border border-[#828282] outline-none w-full focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight`}
 										>
 											<option>First</option>
 											<option>Second</option>
+											<option>Third</option>
 										</select>
 										<BiChevronDown className='absolute right-3 text-[20px]' />
 									</div>
@@ -75,7 +108,7 @@ const TermsAndYear = () => {
 										<select
 											{...register('year')}
 											placeholder='Year'
-											className={`px-[24px] py-[17px] text-[16px] bg-white text-gray-400 rounded-[8px] placeholder-red-300 border border-[#828282] outline-none w-full focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight`}
+											className={`px-[24px] py-[17px] text-[16px] bg-white text-[#06042C] rounded-[8px] placeholder-red-300 border border-[#828282] outline-none w-full focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight`}
 										>
 											{yearList}
 										</select>
@@ -83,11 +116,13 @@ const TermsAndYear = () => {
 									</div>
 
 									<div className='w-full text-center mt-[24px]'>
-										<Link to={'/add-subject'}>
-											<div className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'>
-												Next
-											</div>
-										</Link>
+										{/* <Link to={'/add-subject'}> */}
+										<button
+											onSubmit={handleSubmit(onSubmit)}
+											className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+										>
+											Next
+										</button>
 									</div>
 								</form>
 							</div>

@@ -1,10 +1,11 @@
+import axios from 'axios';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CLASS {
-	id: string;
+	classId: string;
 	className: string;
 }
 
@@ -12,18 +13,19 @@ const Classes = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+	let navigate = useNavigate();
 	const enteredClass = useRef<HTMLInputElement | null>(null);
 	const [classList, setclassList] = useState<CLASS[]>([
 		{
-			id: '1',
+			classId: '1',
 			className: 'JSS1',
 		},
 		{
-			id: '2',
+			classId: '2',
 			className: 'JSS2',
 		},
 		{
-			id: '3',
+			classId: '3',
 			className: 'JSS3',
 		},
 	]);
@@ -35,7 +37,7 @@ const Classes = () => {
 		setclassList([
 			...classList,
 			{
-				id: uuidv4(),
+				classId: uuidv4(),
 				className: className,
 			},
 		]);
@@ -44,8 +46,40 @@ const Classes = () => {
 
 	const removeClass = (subjectId: string) => {
 		setclassList((prevState) => {
-			return prevState.filter((subjectList) => subjectList.id !== subjectId);
+			return prevState.filter(
+				(subjectList) => subjectList.classId !== subjectId
+			);
 		});
+	};
+
+	const classHandler = async () => {
+		let data = { classList: classList };
+		// console.log(JSON.stringify(data));
+		let config = {
+			method: 'POST',
+			url: `https://admin-service.flipcbt.com/v1/app-setup/set-class`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: data,
+		};
+		let error: any;
+		try {
+			const res = await axios(config);
+			if (res.data.success === true) {
+				alert(res.data.message);
+				navigate('/add-department');
+			}
+		} catch (err) {
+			console.log(err);
+			error = err;
+			if (error.response.status === 409) {
+				alert(error.response.data.error.message);
+			} else {
+				alert('something went wrong');
+			}
+		}
+		// console.log(classList);
 	};
 	return (
 		<div className=''>
@@ -84,13 +118,13 @@ const Classes = () => {
 								</form>
 								<div>
 									<h3 className='mb-[10px] text-[#06042C] text-opacity-50'>
-										{classList.length} SUBJECTS
+										{classList.length} CLASS
 									</h3>
 									<hr className='bg-[#06042C] ' />
 									<ul>
 										{classList.map((classItem) => (
 											<li
-												key={classItem.id}
+												key={classItem.classId}
 												className='flex my-[24px] justify-between'
 											>
 												<div className='flex'>
@@ -106,7 +140,7 @@ const Classes = () => {
 													</p>{' '}
 												</div>
 												<IoCloseOutline
-													onClick={() => removeClass(classItem.id)}
+													onClick={() => removeClass(classItem.classId)}
 													className='text-[#06042C] cursor-pointer text-opacity-50 text-[25px]'
 												/>{' '}
 											</li>
@@ -115,11 +149,12 @@ const Classes = () => {
 								</div>
 
 								<div className='w-full text-center mt-[24px]'>
-									<Link to={'/add-department'}>
-										<div className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'>
-											Next
-										</div>
-									</Link>
+									<button
+										onClick={classHandler}
+										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+									>
+										Next
+									</button>
 								</div>
 							</div>
 						</div>
