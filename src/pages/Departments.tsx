@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import Loader from '../components/Loader';
 
 interface DEPARTMENT {
 	departmentId: string;
@@ -15,19 +16,20 @@ const Departments = () => {
 	}, []);
 	let navigate = useNavigate();
 	const enteredDepartment = useRef<HTMLInputElement | null>(null);
+	const [showLoader, setShowLoader] = useState(false);
 	const [departmentList, setdepartmentList] = useState<DEPARTMENT[]>([
-		{
-			departmentId: '1',
-			departmentName: 'Science',
-		},
-		{
-			departmentId: '2',
-			departmentName: 'Commercial',
-		},
-		{
-			departmentId: '3',
-			departmentName: 'Art',
-		},
+		// {
+		// 	departmentId: '1',
+		// 	departmentName: 'Science',
+		// },
+		// {
+		// 	departmentId: '2',
+		// 	departmentName: 'Commercial',
+		// },
+		// {
+		// 	departmentId: '3',
+		// 	departmentName: 'Art',
+		// },
 	]);
 
 	const submitHandler = (event: FormEvent) => {
@@ -53,6 +55,7 @@ const Departments = () => {
 	};
 
 	const departmentHandler = async () => {
+		setShowLoader(true);
 		let data = { departmentList: departmentList };
 		// console.log(JSON.stringify(data));
 		let config = {
@@ -67,7 +70,8 @@ const Departments = () => {
 		try {
 			const res = await axios(config);
 			if (res.data.success === true) {
-				alert(res.data.message);
+				// alert(res.data.message);
+				setShowLoader(false);
 				navigate('/superadmin');
 			}
 		} catch (err) {
@@ -153,9 +157,9 @@ const Departments = () => {
 								<div className='w-full text-center mt-[24px]'>
 									<button
 										onClick={departmentHandler}
-										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+										className='py-[10px] px-[20px] flex justify-center gap-x-[10px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
 									>
-										Next
+										v{showLoader ? <Loader /> : 'Next'}
 									</button>
 								</div>
 							</div>

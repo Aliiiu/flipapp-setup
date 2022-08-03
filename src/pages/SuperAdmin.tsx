@@ -11,8 +11,13 @@ interface User {
 	gender: string;
 	password: string;
 }
+
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
+
 const SuperAdmin = () => {
 	const [showPassword, setshowPassword] = useState<boolean>(false);
+	const [file, setFile] = useState<File | null>(null);
+	const [fileDataURL, setFileDataURL] = useState<string>();
 	let navigate = useNavigate();
 	const {
 		register,
@@ -23,6 +28,36 @@ const SuperAdmin = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	useEffect(() => {
+		let fileReader: FileReader;
+		console.log(file);
+		let isCancel = false;
+		if (file) {
+			fileReader = new FileReader();
+			fileReader.onloadend = () => {
+				setFileDataURL(fileReader.result as string);
+			};
+			fileReader.readAsDataURL(file);
+		} else {
+			setFileDataURL('');
+		}
+	}, [file]);
+
+	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// console.log(e.currentTarget.files![0]);
+		const imagefile = e.currentTarget.files![0];
+
+		if (!imagefile.type.match(imageMimeType)) {
+			alert('image file type not supported');
+			return;
+		}
+		if (imagefile) {
+			setFile(imagefile);
+		} else {
+			setFile(null);
+		}
+	};
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		console.log(JSON.stringify(data));
@@ -77,20 +112,31 @@ const SuperAdmin = () => {
 								<h2 className='text-[30px] font-bold mobile:text-center'>
 									Setup Super Admin
 								</h2>
-								<div className='relative mt-[20px]'>
-									<img
-										src='/images/profileIcon.png'
-										alt='Demo avatar'
-										width={'140px'}
-										height='130px'
-									/>
-									<img
-										src='/images/cameraIcon.png'
-										alt='camera icon'
-										width={'38px'}
-										height='33px'
-										className='absolute top-0 left-[100px]'
-									/>
+								<div className='relative'>
+									<div className='rounded-[100%] overflow-hidden flex justify-center items-center max-w-[140px] h-[130px] bg-white shadow-2xl mt-[20px]'>
+										<label htmlFor='file'>
+											<img
+												src='/images/cameraIcon.png'
+												alt='camera icon'
+												width={'38px'}
+												height='33px'
+												className='absolute top-0 z-50 cursor-pointer left-[100px]'
+											/>
+										</label>
+										{fileDataURL ? (
+											<img src={fileDataURL} alt='' className='object-cover' />
+										) : (
+											<p>Add Image</p>
+										)}
+										<input
+											id='file'
+											accept='.png, .jpeg, .jpg'
+											name='file'
+											type={'file'}
+											onChange={changeHandler}
+											className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
+										/>
+									</div>
 								</div>
 								<form
 									onSubmit={handleSubmit(onSubmit)}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import Loader from '../components/Loader';
 
 interface SUBJECT {
 	subjectId: string;
@@ -15,15 +16,17 @@ const Subject = () => {
 	}, []);
 	let navigate = useNavigate();
 	const enteredSubject = useRef<HTMLInputElement | null>(null);
+	const [showLoader, setShowLoader] = useState(false);
+
 	const [subjectList, setsubjectList] = useState<SUBJECT[]>([
-		{ subjectId: '1', subjectName: 'English' },
-		{ subjectId: '2', subjectName: 'Mathematics' },
-		{ subjectId: '3', subjectName: 'Social Studies' },
-		{ subjectId: '4', subjectName: 'French' },
-		{ subjectId: '5', subjectName: 'Yoruba' },
-		{ subjectId: '6', subjectName: 'Basic Science' },
-		{ subjectId: '7', subjectName: 'Basic Technology' },
-		{ subjectId: '8', subjectName: 'Home Economics' },
+		// { subjectId: '1', subjectName: 'English' },
+		// { subjectId: '2', subjectName: 'Mathematics' },
+		// { subjectId: '3', subjectName: 'Social Studies' },
+		// { subjectId: '4', subjectName: 'French' },
+		// { subjectId: '5', subjectName: 'Yoruba' },
+		// { subjectId: '6', subjectName: 'Basic Science' },
+		// { subjectId: '7', subjectName: 'Basic Technology' },
+		// { subjectId: '8', subjectName: 'Home Economics' },
 	]);
 
 	const submitHandler = (event: React.SyntheticEvent) => {
@@ -50,6 +53,7 @@ const Subject = () => {
 
 	const subjectHandler = async () => {
 		// console.log(subjectList);
+		setShowLoader(true);
 		let config = {
 			method: 'POST',
 			url: `https://admin-service.flipcbt.com/v1/app-setup/set-subject`,
@@ -62,7 +66,8 @@ const Subject = () => {
 		try {
 			const res = await axios(config);
 			if (res.data.success === true) {
-				alert(res.data.message);
+				// alert(res.data.message);
+				setShowLoader(false);
 				navigate('/add-class');
 			}
 		} catch (err) {
@@ -144,9 +149,9 @@ const Subject = () => {
 								<div className='w-full text-center mt-[24px]'>
 									<button
 										onClick={subjectHandler}
-										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+										className='py-[10px] px-[20px] flex justify-center gap-x-[10px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
 									>
-										Next
+										{showLoader ? <Loader /> : 'Next'}
 									</button>
 								</div>
 							</div>

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { TbEye } from 'react-icons/tb';
 import { FiUploadCloud } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ImageConfig } from '../components/ImageConfig';
-import FileInput from '../components/FileInput';
-import { rejects } from 'assert';
 import axios from 'axios';
+import Loader from '../components/Loader';
 
 type User = {
 	fullname: string;
@@ -18,8 +16,8 @@ type User = {
 
 const SchoolForm = () => {
 	const [image, setImage] = useState<File | null>();
+	const [showLoader, setShowLoader] = useState(false);
 	let navigate = useNavigate();
-	const [showPassword, setshowPassword] = useState<boolean>(false);
 	const {
 		register,
 		handleSubmit,
@@ -40,6 +38,7 @@ const SchoolForm = () => {
 
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		// console.log(image);
+		setShowLoader(true);
 		if (data) {
 			data.uploads = image;
 			const newData = new FormData();
@@ -61,7 +60,8 @@ const SchoolForm = () => {
 			try {
 				const res = await axios(config);
 				if (res.data.success === true) {
-					alert(res.data.message);
+					setShowLoader(false);
+					// alert(res.data.message);
 					// console.log(JSON.stringify(data));
 					navigate('/terms-and-year');
 				}
@@ -188,10 +188,16 @@ const SchoolForm = () => {
 										)}
 									</div>
 									<div className='w-full text-center mt-[24px]'>
-										<input
+										{/* <input
 											type={'submit'}
 											className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
-										/>
+										/> */}
+										<button
+											type='submit'
+											className='py-[10px] flex justify-center gap-x-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+										>
+											{showLoader ? <Loader /> : 'Next'}
+										</button>
 									</div>
 								</form>
 							</div>

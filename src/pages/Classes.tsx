@@ -3,6 +3,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import Loader from '../components/Loader';
 
 interface CLASS {
 	classId: string;
@@ -10,24 +11,25 @@ interface CLASS {
 }
 
 const Classes = () => {
+	const [showLoader, setShowLoader] = useState(false);
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 	let navigate = useNavigate();
 	const enteredClass = useRef<HTMLInputElement | null>(null);
 	const [classList, setclassList] = useState<CLASS[]>([
-		{
-			classId: '1',
-			className: 'JSS1',
-		},
-		{
-			classId: '2',
-			className: 'JSS2',
-		},
-		{
-			classId: '3',
-			className: 'JSS3',
-		},
+		// {
+		// 	classId: '1',
+		// 	className: 'JSS1',
+		// },
+		// {
+		// 	classId: '2',
+		// 	className: 'JSS2',
+		// },
+		// {
+		// 	classId: '3',
+		// 	className: 'JSS3',
+		// },
 	]);
 
 	const submitHandler = (event: FormEvent) => {
@@ -53,6 +55,7 @@ const Classes = () => {
 	};
 
 	const classHandler = async () => {
+		setShowLoader(true);
 		let data = { classList: classList };
 		// console.log(JSON.stringify(data));
 		let config = {
@@ -67,7 +70,8 @@ const Classes = () => {
 		try {
 			const res = await axios(config);
 			if (res.data.success === true) {
-				alert(res.data.message);
+				// alert(res.data.message);
+				setShowLoader(false);
 				navigate('/add-department');
 			}
 		} catch (err) {
@@ -151,9 +155,9 @@ const Classes = () => {
 								<div className='w-full text-center mt-[24px]'>
 									<button
 										onClick={classHandler}
-										className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+										className='py-[10px] px-[20px] flex justify-center gap-x-[10px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
 									>
-										Next
+										{showLoader ? <Loader /> : 'Next'}
 									</button>
 								</div>
 							</div>

@@ -2,7 +2,8 @@ import { BiChevronDown } from 'react-icons/bi';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Loader from '../components/Loader';
 
 type User = {
 	term: string;
@@ -11,6 +12,8 @@ type User = {
 
 const TermsAndYear = () => {
 	let navigate = useNavigate();
+	const [showLoader, setShowLoader] = useState(false);
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -37,6 +40,7 @@ const TermsAndYear = () => {
 	const onSubmit: SubmitHandler<User> = async (data) => {
 		// console.log(data);
 		// console.log(JSON.stringify(data));
+		setShowLoader(true);
 		let config = {
 			method: 'POST',
 			url: `https://admin-service.flipcbt.com/v1/app-setup/set-term-and-year`,
@@ -49,7 +53,8 @@ const TermsAndYear = () => {
 		try {
 			const res = await axios(config);
 			if (res.data.success === true) {
-				alert(res.data.message);
+				// alert(res.data.message);
+				setShowLoader(false);
 				navigate('/add-subject');
 			}
 		} catch (err) {
@@ -119,9 +124,9 @@ const TermsAndYear = () => {
 										{/* <Link to={'/add-subject'}> */}
 										<button
 											onSubmit={handleSubmit(onSubmit)}
-											className='py-[10px] px-[20px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
+											className='py-[10px] px-[20px] flex justify-center gap-x-[10px] md:px-[40px] md:py-[16px] text-[16px] rounded-[8px] w-full bg-[#0075FF] text-white'
 										>
-											Next
+											{showLoader ? <Loader /> : 'Next'}
 										</button>
 									</div>
 								</form>
