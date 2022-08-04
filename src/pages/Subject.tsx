@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -67,7 +67,7 @@ const Subject = () => {
 			const res = await axios(config);
 			if (res.data.success === true) {
 				// alert(res.data.message);
-				setShowLoader(false);
+				// setShowLoader(false);
 				navigate('/add-class');
 			}
 		} catch (err) {
@@ -78,6 +78,8 @@ const Subject = () => {
 			} else {
 				alert('something went wrong');
 			}
+		} finally {
+			setShowLoader(false);
 		}
 	};
 	return (

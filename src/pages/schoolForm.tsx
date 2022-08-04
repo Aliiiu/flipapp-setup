@@ -18,12 +18,7 @@ const SchoolForm = () => {
 	const [image, setImage] = useState<File | null>();
 	const [showLoader, setShowLoader] = useState(false);
 	let navigate = useNavigate();
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<User>();
+	const { register, handleSubmit } = useForm<User>();
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -60,9 +55,7 @@ const SchoolForm = () => {
 			try {
 				const res = await axios(config);
 				if (res.data.success === true) {
-					setShowLoader(false);
-					// alert(res.data.message);
-					// console.log(JSON.stringify(data));
+					// setShowLoader(false);
 					navigate('/terms-and-year');
 				}
 			} catch (err) {
@@ -73,6 +66,8 @@ const SchoolForm = () => {
 				} else {
 					alert('something went wrong');
 				}
+			} finally {
+				setShowLoader(false);
 			}
 		}
 	};

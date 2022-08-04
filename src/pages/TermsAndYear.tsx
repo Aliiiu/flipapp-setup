@@ -1,6 +1,6 @@
 import { BiChevronDown } from 'react-icons/bi';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Loader from '../components/Loader';
@@ -54,7 +54,7 @@ const TermsAndYear = () => {
 			const res = await axios(config);
 			if (res.data.success === true) {
 				// alert(res.data.message);
-				setShowLoader(false);
+				// setShowLoader(false);
 				navigate('/add-subject');
 			}
 		} catch (err) {
@@ -65,6 +65,8 @@ const TermsAndYear = () => {
 			} else {
 				alert('something went wrong');
 			}
+		} finally {
+			setShowLoader(false);
 		}
 	};
 	return (

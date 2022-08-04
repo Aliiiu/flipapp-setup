@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Loader from '../components/Loader';
 
@@ -71,7 +71,7 @@ const Departments = () => {
 			const res = await axios(config);
 			if (res.data.success === true) {
 				// alert(res.data.message);
-				setShowLoader(false);
+				// setShowLoader(false);
 				navigate('/superadmin');
 			}
 		} catch (err) {
@@ -82,6 +82,8 @@ const Departments = () => {
 			} else {
 				alert('something went wrong');
 			}
+		} finally {
+			setShowLoader(false);
 		}
 		// console.log(departmentList);
 	};
