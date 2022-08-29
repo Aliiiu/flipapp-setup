@@ -128,6 +128,13 @@ const SchoolForm = () => {
 										placeholder='Enter your Email'
 										className='px-[24px] py-[17px] mb-[25px] mt-[6px] text-[16px] placeholder-gray-400 input_border w-full outline-none focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight'
 									/>
+									<label htmlFor='address'>School Address*</label>
+									<input
+										required
+										type='text'
+										placeholder='Enter your Address'
+										className='px-[24px] py-[17px] mb-[25px] mt-[6px] text-[16px] placeholder-gray-400 input_border w-full outline-none focus:border-[#0075FF] focus:shadow-[0px_8px_24px_rgba(149,157,165,0.2)] appearance-none leading-tight'
+									/>
 									{/* <label htmlFor='dropzone-file'>School Logo</label>
 									<div className='relative input_border mt-2 cursor-pointer w-full py-[16px] px-[24px]'>
 										<div className='flex flex-col items-center justify-center'>
